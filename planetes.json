@@ -1,0 +1,65 @@
+{
+  "Soleil": {
+    "masse": 1.989e30,
+    "rayon": 6.96340e5,
+    "distance_soleil": 0,
+    "vitesse": 0.0,
+    "rgb": "255,255,0"
+  },
+  "Mercure": {
+    "masse": 3.3010e23,
+    "rayon": 2.439e3,
+    "distance_soleil": 57.9e9,
+    "vitesse": 47.4,
+    "rgb": "128,128,128"
+  },
+  "Vénus": {
+    "masse": 4.8675e24,
+    "rayon": 6.052e3,
+    "distance_soleil": 108.2e9,
+    "vitesse": 35.0,
+    "rgb": "255,238,189"
+  },
+  "Terre": {
+    "masse": 5.97237e24,
+    "rayon": 6.371e3,
+    "distance_soleil": 149.6e9,
+    "vitesse": 29.8,
+    "rgb": "0,0,255"
+  },
+  "Mars": {
+    "masse": 6.4171e23,
+    "rayon": 3.396e3,
+    "distance_soleil": 227.9e9,
+    "vitesse": 24.2,
+    "rgb": "255,85,0"
+  },
+  "Jupiter": {
+    "masse": 1.8986e27,
+    "rayon": 7.1492e4,
+    "distance_soleil": 778.5e9,
+    "vitesse": 13.0,
+    "rgb": "255,191,0"
+  },
+  "Saturne": {
+    "masse": 5.6834e26,
+    "rayon": 6.0233e4,
+    "distance_soleil": 1433.5e9,
+    "vitesse": 10.0,
+    "rgb": "240,226,160"
+  },
+  "Uranus": {
+    "masse": 8.6832e25,
+    "rayon": 2.5559e4,
+    "distance_soleil": 2872.5e9,
+    "vitesse": 6.8,
+    "rgb": "175,240,210"
+  },
+  "Neptune": {
+    "masse": 1.0808e26,
+    "rayon": 2.4764e4,
+    "distance_soleil": 4497.1e9,
+    "vitesse": 5.4,
+    "rgb": "30,144,255"
+  }
+}
