@@ -15,12 +15,12 @@ def star_sky():
         pygame.draw.circle(screen, "white", random_pos, random.randrange(3))
 
 def update_pos():
-    global app
     try:
         if(screen.get_width()<float(text_pos_x.get()) or screen.get_width()<float(text_pos_y.get())):
             raise ValueError("Out of range")
         planet_selected.pos_x = float(text_pos_x.get())
         planet_selected.pos_y = float(text_pos_y.get())
+        planet_selected.masse = float(text_masse.get())
             
             
     except ValueError:
@@ -31,7 +31,7 @@ def update_pos():
     
 
 def open_pop_up():
-    global text_pos_x, text_pos_y, app
+    global text_pos_x, text_pos_y,text_masse, app
     
     if app is None:
         app = tk.Tk()
@@ -49,8 +49,15 @@ def open_pop_up():
         text_pos_y.grid(column=1, row=1, columnspan=2)
         text_pos_y.insert(0, planet_selected.pos_y)
 
+        masse = tk.Label(app, text="Masse")
+        masse.grid(column=0, row=2)
+
+        text_masse = tk.Entry(app)
+        text_masse.grid(column=1, row=2, columnspan=2)
+        text_masse.insert(0, planet_selected.masse)
+
         button = tk.Button(app, text="Update", command=update_pos)
-        button.grid(column=1, row=2)
+        button.grid(column=1, row=3)
         
         planet_selected.pos_x = float(text_pos_x.get())
         planet_selected.pos_y = float(text_pos_y.get())
@@ -62,6 +69,10 @@ def open_pop_up():
         
         text_pos_y.delete(0, tk.END)
         text_pos_y.insert(0, planet_selected.pos_y)
+
+        text_masse.delete(0, tk.END)
+        text_masse.insert(0, planet_selected.masse)
+
         app.lift()  # Amener la fenêtre au premier plan
 
     
@@ -84,40 +95,33 @@ def load_planet():
         if planet != "Soleil":
             list_distance.append(data[planet]["distance_soleil"])
 
-    max_rayon = max(list_rayon)
-    scale_factor = 100  # Ajustez cette valeur selon vos préférences
-
     list_planet = []
     for planet in data:
         d = data[planet]
         dt_soleil = float(d['distance_soleil']) / min(list_distance) * 10 + screen.get_width() / 2
-        planet_actuel = Planet(planet, d["masse"], d["rayon"], d["vitesse"], dt_soleil, d["rgb"], pos_y=screen.get_height() / 2)
+        planet_actuel = Planet(planet, d["masse"], d["rayon"], 0,d["vitesse"], dt_soleil, d["rgb"], pos_y=screen.get_height() / 2)
         list_planet.append(planet_actuel)
 
     return list_planet
     
     
     
-def call_drawn_planet(l_planet):
+def call_drawn_planet():
 
     for p in list_planet:
-        pos = pygame.Vector2(p.pos_x, p.pos_y)
-        #r_rayon = (p.rayon / max_rayon) * scale_factor
-        #pygame.draw.circle(screen, get_color(p.rgb), pos, int(r_rayon))
         drawn_planet(p, p.pos_x, p.pos_y, "./ressource/"+p.nom+".png")
     
     
 def drawn_planet(planet, pos_x, pos_y, file_name):
   SCALE = 0.10
-  THICKNESS = 3
-  LENGTH_LINE = 25
+
   # Chargez l'image en couleur
   try:
     image = cv2.imread(file_name, cv2.IMREAD_COLOR)
 
     # Obtenir les dimensions de l'image
     (h, w) = image.shape[:2]
-  except:
+  except Exception:
     print('Erreur pour'+file_name)
 
   # Calculez les coordonnées du centre
@@ -135,6 +139,13 @@ def drawn_planet(planet, pos_x, pos_y, file_name):
   screen.blit(sun1,(pos_x_rel,pos_y_rel))
   
   if planet_selected != None and planet_selected == planet:
+    draw_selected_planet(pos_x_rel, pos_y_rel, h, w)
+
+def draw_selected_planet(pos_x_rel, pos_y_rel, h, w):
+    SCALE = 0.10
+    THICKNESS = 3
+    LENGTH_LINE = 25
+
     pygame.draw.line(screen,"white",(pos_x_rel,pos_y_rel),(pos_x_rel+LENGTH_LINE,pos_y_rel), THICKNESS)
     pygame.draw.line(screen,"white",(pos_x_rel,pos_y_rel),(pos_x_rel,pos_y_rel+LENGTH_LINE), THICKNESS)
     
@@ -148,6 +159,11 @@ def drawn_planet(planet, pos_x, pos_y, file_name):
     pygame.draw.line(screen,"white",(pos_x_rel,pos_y_rel+h*SCALE),(pos_x_rel+LENGTH_LINE,pos_y_rel+h*SCALE), THICKNESS)
 
 
+def drawn_cross(pos_x, pos_y):
+    THICKNESS = 3
+    CROSS_SIZE = 20
+    pygame.draw.line(screen,"white",(pos_x-CROSS_SIZE,pos_y),(pos_x+CROSS_SIZE,pos_y), THICKNESS)
+    pygame.draw.line(screen,"white",(pos_x,pos_y-CROSS_SIZE),(pos_x,pos_y+CROSS_SIZE), THICKNESS)
 
 # pygame setup
 pygame.init()
@@ -164,39 +180,30 @@ app = None
 planet_selected = None
 radius = 10
 angle = 10
+cross = None
 
-#sun_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
-#earth_pos = pygame.Vector2(screen.get_width() / 2+100, screen.get_height() / 2+100)
 
 bg = pygame.image.load("sky1.jpg")
 list_planet = load_planet()
 
 while running:
-    # poll for events
-    # pygame.QUIT event means the user clicked X to close your window
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
 
     # fill the screen with a color to wipe away anything from last frame
     #screen.fill("black")
     screen.blit(bg, (0,0))
 
+    call_drawn_planet()
 
-    call_drawn_planet(list_planet)
-    #drawn_planet(screen.get_width() / 2,screen.get_height() / 2,"./ressource/Soleil.png")
-
-    keys = pygame.key.get_pressed()
-    ev = pygame.event.get()
+    if cross is not None:
+        drawn_cross(cross[0], cross[1])
     
     if app:
         app.update_idletasks()
         app.update()
 
-    for event in ev:
+    for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = event.pos
-            print(f"Voici les cord x: {mouse_x} et y: {mouse_y}")
             for planet in list_planet:
                 # Calculer la position réelle de la planète sur l'écran
                 planet_x = planet.pos_x
@@ -208,12 +215,16 @@ while running:
                 # Vérifier si la distance est inférieure ou égale au rayon de la planète
                 if distance <= planet.rayon:
                     planet_selected = planet
+                    cross = None
                     open_pop_up()
                     break  # Sortir de la boucle si une planète a été sélectionnée
-        
-    if keys[pygame.K_k]:
-        print("Ouverture popup")
-        open_pop_up()
+            if planet_selected is None:
+                cross = mouse_x, mouse_y
+                drawn_cross(mouse_x, mouse_y)
+
+        if event.type == pygame.QUIT:
+            running = False
+
 
     # flip() the display to put your work on screen
     pygame.display.flip()

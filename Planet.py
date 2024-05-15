@@ -1,9 +1,10 @@
 class Planet:
-    def __init__(self, nom, masse, rayon, vitesse, pos_x, rgb , pos_y =0 ) -> None:
+    def __init__(self, nom, masse, rayon, vitesse_x, vitesse_y, pos_x, rgb, pos_y =0 ) -> None:
         self.nom = nom
         self.masse = masse
         self.rayon = rayon
-        self.vitesse = vitesse
+        self.vitesse_x = vitesse_x
+        self.vitesse_y = vitesse_y
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.rgb = rgb
